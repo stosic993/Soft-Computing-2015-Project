@@ -145,6 +145,8 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
 
 
+
+
             findPointsOfInterestsForRoi(mRgbaT);
         }else{
             updatePointsofInterests(mRgbaT);
