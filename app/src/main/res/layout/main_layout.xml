@@ -38,7 +38,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Video"
+                android:text="Photo from gallery"
                 android:id="@+id/video_button"
                 android:layout_gravity="center_horizontal" />
 

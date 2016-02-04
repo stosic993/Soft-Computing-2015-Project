@@ -4,18 +4,39 @@
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Chose video"
-        android:id="@+id/upload_button"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="60dp" />
+        android:weightSum="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp">
 
-    <Button
-        android:layout_width="wrap_content"
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:id="@+id/back_button2"
+            android:layout_weight="0.62" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load image"
+            android:id="@+id/upload_button" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detect people"
+            android:id="@+id/detect_button" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Back"
-        android:id="@+id/back_button2"
-        android:layout_gravity="center_horizontal" />
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal|top" />
+
 </LinearLayout>

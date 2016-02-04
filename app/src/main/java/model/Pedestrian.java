@@ -8,17 +8,16 @@ import org.opencv.core.MatOfPoint2f;
  */
 public class Pedestrian {
     private MatOfPoint2f pointsOfInterests;
+    private Mat image;
+
+
 
     public Mat getImage() {
         return image;
     }
-
     public void setImage(Mat image) {
         this.image = image;
     }
-
-    private Mat image;
-
     public Pedestrian(){
         pointsOfInterests = new MatOfPoint2f();
     }

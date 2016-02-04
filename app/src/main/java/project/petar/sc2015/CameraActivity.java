@@ -2,7 +2,6 @@ package project.petar.sc2015;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -44,7 +43,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private CameraBridgeViewBase mOpenCvCameraView;
     private static final String TAG=CameraActivity.class.getSimpleName();
     HOGDescriptor hog;
-    Mat mat;
     private MatOfRect foundLocations;
     private MatOfDouble foundWeights;
     Size winStride;
@@ -54,13 +52,9 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     Point fontPoint;
 
     private boolean isTimeToHog = true;
-    private boolean isPedestriansReady = false;
 
-    private static int  counter = 0;
-    private static final int  emptyFrames = 15;
     private ArrayList<Mat> croppedImages;
     private ArrayList<Pedestrian> pedestrians;
-    private HOGAsync asyncHog;
     private BaseLoaderCallback mLoaderCallback;
     private Button back;
 
@@ -100,14 +94,8 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         rectPoint1 = new Point();
         rectPoint2 = new Point();
         fontPoint = new Point();
-        int frames = 0;
-        int framesWithPeople = 0;
-        final Scalar rectColor = new Scalar(0, 255, 0);
-        final Scalar fontColor = new Scalar(255, 255, 255);
         final long startTime = System.currentTimeMillis();
-        croppedImages = new ArrayList<>();
         pedestrians = new ArrayList<>();
-        asyncHog = new HOGAsync();
         back = (Button) findViewById(R.id.back_button);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +134,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         //prilagodjavanje formata
         Imgproc.cvtColor(mRgbaT, mRgbaT,Imgproc.COLOR_RGBA2RGB);
         if(isTimeToHog) {
-
+            Log.i(TAG, "Pozvana metoda asyncHOG.");
             new Thread(new Runnable() {
                 public void run() {
                     isTimeToHog = false;
@@ -158,7 +146,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
 
             findPointsOfInterestsForRoi(mRgbaT);
-            Log.i(TAG, "Pozvana metoda asyncHOG.");
         }else{
             updatePointsofInterests(mRgbaT);
         }
@@ -166,13 +153,12 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         for (Rect p : foundLocations.toArray()) {
             Imgproc.rectangle(mRgbaT, new Point(p.x, p.y), new Point(p.x + p.width, p.y + p.height), new Scalar(0, 255, 0));
         }
+
         for(Pedestrian p : pedestrians){
             for(Point pointP : p.getPointsOfInterests().toArray()){
                 Imgproc.rectangle(mRgbaT, new Point(pointP.x, pointP.y), new Point(pointP.x+5, pointP.y + 5), new Scalar(255, 0, 0));
             }
         }
-
-        Log.i(TAG, " Broj prepoznatih regiona: " + croppedImages.size());
 
         return mRgbaT;
     }
@@ -205,7 +191,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     }
 
     private Mat findPointsOfInterestsForRoi(Mat frame){
-        isPedestriansReady = false;
         if(foundLocations.toArray().length == 0)
             return frame;
 
@@ -239,30 +224,6 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     {
         super.onResume();
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_6, this, mLoaderCallback);
-    }
-
-    private class HOGAsync extends AsyncTask<Mat, Void, Mat> {
-
-
-
-        @Override
-        protected void onPostExecute(Mat result) {
-            isTimeToHog = true;
-        }
-
-        @Override
-        protected Mat doInBackground(Mat... mats) {
-            isTimeToHog = false;
-            hog.detectMultiScale(mats[0], foundLocations, foundWeights, 0.0, winStride, padding, 1.05, 2.0, false);
-            isTimeToHog = true;
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected void onProgressUpdate(Void... values) {}
     }
 
 
